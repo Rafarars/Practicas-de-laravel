@@ -5,10 +5,10 @@ namespace App\Services\Practicas\Armors;
 use App\Services\Practicas\Armor;
 use App\Services\Practicas\Attack;
 
-class BronzeArmor extends Armor
+class MissingArmor extends Armor
 {
     public function absorbDamage(Attack $attack)
     {
-        return $attack->getDamage() / 2;
+        return $attack->getDamage();
     }
 }

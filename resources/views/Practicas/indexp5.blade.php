@@ -14,5 +14,12 @@
 
     <h2>{{ $silence->getName() }} (Arquero)</h2>
     <p>Vida: {{ $silence->getHealth() }}</p>
+
+    <h3>Registro de Ataques</h3>
+    <ul>
+        @foreach (session('attack_logs', []) as $log)
+            <li>{{ $log }}</li>
+        @endforeach
+    </ul>
 </body>
 </html>

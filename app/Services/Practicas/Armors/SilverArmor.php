@@ -3,11 +3,12 @@
 namespace App\Services\Practicas\Armors;
 
 use App\Services\Practicas\Armor;
+use App\Services\Practicas\Attack;
 
-class SilverArmor implements Armor
+class SilverArmor extends Armor
 {
-    public function absorbDamage($damage)
+    public function absorbPhysicalDamage(Attack $attack)
     {
-        return $damage / 3;
+        return $attack->getDamage() / 3;
     }
 }

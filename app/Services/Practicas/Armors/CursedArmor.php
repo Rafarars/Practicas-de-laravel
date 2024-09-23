@@ -3,11 +3,12 @@
 namespace App\Services\Practicas\Armors;
 
 use App\Services\Practicas\Armor;
+use App\Services\Practicas\Attack;
 
-class CursedArmor implements Armor
+class CursedArmor extends Armor
 {
-    public function absorbDamage($damage)
+    public function absorbDamage(Attack $Attack)
     {
-        return $damage * 2;
+        return $attack->getDamage() * 2;
     }
 }

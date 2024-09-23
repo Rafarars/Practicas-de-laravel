@@ -2,14 +2,47 @@
 
 namespace App\Services\Practicas;
 
-abstract class Unit
+class Unit
 {
+    const MAX_DAMAGE = 100;
+
     protected $hp = 40;
     protected $name;
+    protected $weapon;
+    protected $armor;
 
-    public function __construct($name)
+    public function __construct($name, Weapon $weapon)
     {
         $this->name = $name;
+        $this->weapon = $weapon;
+        $this->armor = new Armors\MissingArmor();
+    }
+
+    public static function createSoldier()
+    {
+        $soldier = new Unit('Ramm', new Weapons\BasicSword);
+        $soldier->setArmor(new Armors\BronzeArmor());
+
+        return $soldier;
+    }
+
+    public function setWeapon(Weapon $weapon)
+    {
+        $this->weapon = $weapon;
+
+        return $this;
+    }
+
+    public function setArmor(Armor $armor = null)
+    {
+        $this->armor = $armor;
+
+        return $this;
+    }
+
+    public function setShield()
+    {
+        return $this;
     }
 
     public function getName()
@@ -24,31 +57,44 @@ abstract class Unit
 
     public function move($direction)
     {
-        show("{$this->name} camina hacia $direction");
+        Log::info("{$this->name} camina hacia $direction");
     }
 
-    abstract public function attack(Unit $opponent);
-
-    public function takeDamage($damage)
+    public function attack(Unit $opponent)
     {
-        $this->hp = $this->hp - $this->absorbDamage($damage);
+        $attack = $this->weapon->createAttack();
 
-        show("{$this->name} ahora tiene {$this->hp} puntos de vida");
+        Log::info($attack->getDescription($this, $opponent));
+
+        $opponent->takeDamage($attack);
+    }
+
+    public function takeDamage(Attack $attack)
+    {
+        $this->setHp(
+            $this->armor->absorbDamage($attack)
+        );
+
+        Log::info("{$this->name} ahora tiene {$this->hp} puntos de vida");
 
         if ($this->hp <= 0) {
             $this->die();
         }
     }
 
-    public function die()
+    protected function setHp($damage)
     {
-        show("{$this->name} muere");
+        if ($damage > static::MAX_DAMAGE) {
+            $damage = static::MAX_DAMAGE;
+        }
 
-        exit();
+        $this->hp = $this->hp - $damage;
     }
 
-    protected function absorbDamage($damage)
+    public function die()
     {
-        return $damage;
+        Log::info("{$this->name} muere");
+
+        exit();
     }
 }
